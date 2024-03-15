@@ -1,0 +1,23 @@
+name: tf-ghactions-proj
+run-name: pushing to trigger action
+on:
+  [push] #runs with push or a merged pull request
+jobs:
+  install-python:
+    name: installing python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: set up python latest
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+          check-latest: true
+      - name: install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install flake8 pytest
+
+      - name: check if successful
+        run: echo python -v
