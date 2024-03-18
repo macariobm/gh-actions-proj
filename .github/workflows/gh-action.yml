@@ -1,7 +1,8 @@
 name: tf-ghactions-proj
 run-name: pushing to trigger action
 on:
-  [push] #runs with push or a merged pull request
+  pull_request:
+    types: opened  
 jobs:
   install-python:
     name: installing python
