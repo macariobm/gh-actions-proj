@@ -1,0 +1,87 @@
+---
+- name: update servers
+  hosts: servers
+  become: yes
+  gather_facts: true
+  remote_user: ubuntu
+  vars:
+    ansible_ssh_private_key_file: "~/.ssh/dev-env-key"
+    
+
+  pre_tasks:
+  - name: ssh config
+    ansible.builtin.script: ./ssh-config.sh
+
+  - name: import instances public IPs
+    ansible.builtin.script: ./fetch-ips.sh
+
+  tasks:
+  - name: update packages
+    ansible.builtin.apt:
+     name: '*'
+     state: latest
+ 
+  - name: upgrade
+    ansible.builtin.apt:
+      upgrade: dist
+ 
+  - name: install packages
+    ansible.builtin.apt:
+     name:
+       - ca-certificates
+       - curl 
+       - gnupg
+       - software-properties-common
+       - apt-transport-https
+       - python3
+
+  - name: create dir for docker's gpg key
+    ansible.builtin.file:
+      mode: '755'
+      path: /etc/apt/keyrings
+      state: "directory"
+  
+  - name: add docker's gpg key to dir
+    ansible.builtin.apt_key:
+      keyring: /etc/apt/keyrings/docker.gpg
+      url: https://download.docker.com/linux/ubuntu/gpg
+
+  - name: add docker repository
+    become: yes
+    ansible.builtin.apt_repository:
+      repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu jammy stable"
+      filename: docker
+
+  - name: install docker pkgs
+    become: yes 
+    ansible.builtin.apt:
+      name:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - docker-buildx-plugin
+        - docker-compose-plugin
+      state: present
+      update_cache: true
+
+  - name: add group
+    ansible.builtin.group:
+      name: docker
+      state: "present"
+  
+  - name: add user to group
+    ansible.builtin.user:
+      user: 'appdev'
+      create_home: true
+      append: true
+      shell: /bin/bash
+      group: docker
+      
+  - name: clean after installation
+    ansible.builtin.apt:
+      clean: yes
+
+  - name: build docker image
+    community.docker.docker_image_build:
+      name: macariobm/dev-env:v1
+      path: "$HOME"
