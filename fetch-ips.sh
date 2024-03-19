@@ -1,15 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-sudo apt install jq
+#install jq if needed
+sudo apt install jq -y
 
 FILE=./hosts
 
 
 if [ -f "$FILE" ]; then
-  echo ${terraform output -json instance_ips} | jq -r '.[]' >> hosts
+  terraform_output=$(terraform output -json instance_ips)
+  echo "$terraform_output" | jq -r '.[]' >> hosts
 else
   echo "[servers]" > hosts
-  echo ${terraform output -json instance_ips} | jq -r '.[]' >> hosts
+  terraform_output=$(terraform output -json instance_ips)
+  echo "$terraform_output" | jq -r '.[]' >> hosts
 fi
 
 
