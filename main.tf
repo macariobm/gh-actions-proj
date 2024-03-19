@@ -91,4 +91,8 @@ resource "aws_instance" "t2micro" {
   vpc_security_group_ids = [aws_security_group.sec_group.id]
   subnet_id              = aws_subnet.public_subnet.id
   count                  = var.instance_num
+
+  tags = {
+    Name = "instance-${count.index + 1}"
+  }
 }

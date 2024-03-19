@@ -17,4 +17,5 @@ variable "aws_profile" {
 variable "instance_num" {
   description = "number os ECs per subnet"
   type        = number
+  default     = 2
 }
