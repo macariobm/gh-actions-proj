@@ -12,9 +12,6 @@
   - name: ssh config
     ansible.builtin.script: ./ssh-config.sh
 
-  - name: import instances public IPs
-    ansible.builtin.script: ./fetch-ips.sh
-
   tasks:
   - name: update packages
     ansible.builtin.apt:

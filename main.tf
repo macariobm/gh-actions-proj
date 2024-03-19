@@ -10,6 +10,7 @@ resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.vpc.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
+  availability_zone       = "sa-east-1c"
 
   tags = {
     Name = "public_subnet"
@@ -49,12 +50,12 @@ resource "aws_security_group" "sec_group" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
-  description                  = "alow ssh connection"
-  security_group_id            = aws_security_group.sec_group.id
-  from_port                    = 22
-  ip_protocol                  = "tcp"
-  to_port                      = 22
-  referenced_security_group_id = aws_security_group.sec_group.id
+  description       = "alow ssh connection"
+  security_group_id = aws_security_group.sec_group.id
+  from_port         = 22
+  ip_protocol       = "tcp"
+  to_port           = 22
+  cidr_ipv4         = "0.0.0.0/0"
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_egress" {
@@ -87,7 +88,9 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_instance" "t2micro" {
   ami                    = data.aws_ami.ubuntu.id
+  key_name               = aws_key_pair.instance_key.key_name
   instance_type          = "t2.micro"
+  availability_zone      = "sa-east-1c"
   vpc_security_group_ids = [aws_security_group.sec_group.id]
   subnet_id              = aws_subnet.public_subnet.id
   count                  = var.instance_num
