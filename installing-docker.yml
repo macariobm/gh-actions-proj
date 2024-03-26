@@ -6,6 +6,7 @@
   remote_user: 'ubuntu'
   vars:
     ansible_ssh_private_key_file: "~/.ssh/dev-env-key"
+    ansible_ssh_public_key_file: "~/.ssh/dev-env-key.pub"
     
 
   pre_tasks:
@@ -78,8 +79,9 @@
   
   - name: add SSH key to new user
     ansible.posix.authorized_key:
-      key: "~/.ssh/dev-env-key.pub"
       user: appdev
+      state: present
+      key: "{{ lookup('file', '/home/macario/.ssh/dev-env-key.pub') }}"
 
   - name: restart SSH to apply changes
     ansible.builtin.service:
@@ -105,4 +107,4 @@
   - name: create a new container
     community.docker.docker_container:
       name: first-ctn
-      image: "{{ community.docker.docker_image_build.key }}" 
+      image: "{{ community.docker.docker_image_build.id }}"
