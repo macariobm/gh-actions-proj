@@ -72,11 +72,20 @@
       user: appdev
       create_home: true
       append: true
-      generate_ssh_key: true
       state: present
       system: true
-      groups: docker
-      
+      groups: docker,admin
+  
+  - name: add SSH key to new user
+    ansible.posix.authorized_key:
+      key: "~/.ssh/dev-env-key.pub"
+      user: appdev
+
+  - name: restart SSH to apply changes
+    ansible.builtin.service:
+      name: ssh
+      state: restarted
+
   - name: clean after installation
     ansible.builtin.apt:
       clean: yes
