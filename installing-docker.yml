@@ -3,7 +3,7 @@
   hosts: servers
   become: yes
   gather_facts: true
-  remote_user: ubuntu
+  remote_user: 'ubuntu'
   vars:
     ansible_ssh_private_key_file: "~/.ssh/dev-env-key"
     
@@ -34,14 +34,15 @@
 
   - name: create dir for docker's gpg key
     ansible.builtin.file:
-      mode: '755'
       path: /etc/apt/keyrings
-      state: "directory"
+      state: directory
+      mode: '755'
   
-  - name: add docker's gpg key to dir
+  - name: add docker's gpg key 
     ansible.builtin.apt_key:
-      keyring: /etc/apt/keyrings/docker.gpg
       url: https://download.docker.com/linux/ubuntu/gpg
+      keyring: /etc/apt/keyrings/docker.gpg
+      state: present
 
   - name: add docker repository
     become: yes
