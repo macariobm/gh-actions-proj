@@ -73,7 +73,7 @@
       create_home: true
       append: true
       shell: /bin/bash
-      group: docker
+      groups: docker
       
   - name: clean after installation
     ansible.builtin.apt:

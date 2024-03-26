@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-#install jq if needed
-
 FILE=./hosts
 
 
