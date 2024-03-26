@@ -67,12 +67,14 @@
       name: docker
       state: "present"
   
-  - name: add user to group
+  - name: create and add user to group
     ansible.builtin.user:
-      user: 'appdev'
+      user: appdev
       create_home: true
       append: true
-      shell: /bin/bash
+      generate_ssh_key: true
+      state: present
+      system: true
       groups: docker
       
   - name: clean after installation
