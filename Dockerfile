@@ -1,14 +1,11 @@
-#syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1
 
-FROM python:alpine3.18
+FROM ubuntu:latest
 
+RUN apt update && apt upgrade --no-install-recommends vim curl git python3 python3-pip -y \
+&& rm -rf /var/lib/apt/lists/*
 RUN useradd --create-home appdev
 USER appdev
 WORKDIR /app
-RUN apk update && apk install --no-install-recommends vim curl git python3 -y \
-&& rm -rf /var/lib/apt/lists/*
-COPY requirements.txt .
-RUN pip install -r requirements.txt 
-
 EXPOSE 8080
-CMD ["bash", "-c"]
+CMD ["python", "-m", "http.server", "8080"]

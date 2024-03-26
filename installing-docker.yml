@@ -79,7 +79,14 @@
     ansible.builtin.apt:
       clean: yes
 
+  - name: copy Dockerfile to remote nodes
+    copy:
+      src: ~/gh-actions-proj/Dockerfile
+      dest: /home/appdev/
+      mode: '644'
+
   - name: build docker image
     community.docker.docker_image_build:
-      name: macariobm/dev-env:v1
-      path: "$HOME"
+      name: dev-env
+      path: /home/appdev/
+      dockerfile: /home/appdev/Dockerfile
