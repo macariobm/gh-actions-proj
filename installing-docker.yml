@@ -91,7 +91,7 @@
       clean: yes
 
   - name: copy Dockerfile to remote nodes
-    copy:
+    ansible.builtin.copy:
       src: ~/gh-actions-proj/Dockerfile
       dest: /home/appdev/
       mode: '644'
@@ -101,3 +101,8 @@
       name: dev-env
       path: /home/appdev/
       dockerfile: /home/appdev/Dockerfile
+
+  - name: create a new container
+    community.docker.docker_container:
+      name: first-ctn
+      image: "{{ community.docker.docker_image_build.key }}" 
