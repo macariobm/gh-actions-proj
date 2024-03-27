@@ -68,7 +68,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_https" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_http" {
-  description       = "alow https connection"
+  description       = "alow http connection"
   security_group_id = aws_security_group.sec_group.id
   from_port         = 80
   ip_protocol       = "tcp"

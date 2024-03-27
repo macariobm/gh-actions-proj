@@ -107,4 +107,4 @@
   - name: create a new container
     community.docker.docker_container:
       name: first-ctn
-      image: "{{ community.docker.docker_image_build.id }}"
+      image: dev-env:latest
