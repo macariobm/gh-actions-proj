@@ -2,7 +2,7 @@
 - name: update servers
   hosts: servers
   become: yes
-  gather_facts: true
+  gather_facts: false
   remote_user: 'ubuntu'
   vars:
     ansible_ssh_private_key_file: "~/.ssh/dev-env-key"
@@ -75,7 +75,7 @@
       append: true
       state: present
       system: true
-      groups: docker,admin
+      groups: docker
   
   - name: add SSH key to new user
     ansible.posix.authorized_key:
@@ -106,5 +106,9 @@
 
   - name: create a new container
     community.docker.docker_container:
-      name: first-ctn
-      image: dev-env:latest
+      name: "container-{{ item }}"
+      image: ubuntu:latest
+      interactive: true
+      state: started
+      tty: true
+    with_sequence: count=4
